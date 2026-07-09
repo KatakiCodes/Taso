@@ -37,3 +37,5 @@ Toda entidade deverá possuir UpdatedAt.
 Toda entidade deverá possuir Id Guid.
 
 Utilizar CancellationToken em todos os handlers.
+
+Um arquivo por declaração: não declarar ou implementar mais de uma classe, record ou interface no mesmo arquivo (cada tipo deve possuir seu próprio ficheiro).

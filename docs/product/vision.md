@@ -1,8 +1,8 @@
-# TodoFlow
+# Taso
 
 ## Visão Geral
 
-TodoFlow é uma aplicação para gerenciamento de tarefas pessoais construída com foco em simplicidade, organização e escalabilidade arquitetural.
+Taso é uma aplicação para gerenciamento de tarefas pessoais construída com foco em simplicidade, organização e escalabilidade arquitetural.
 
 Embora seja um projeto de estudo, sua arquitetura deve refletir boas práticas utilizadas em aplicações reais de mercado.
 

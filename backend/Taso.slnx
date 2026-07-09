@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Taso.API/Taso.API.csproj" />
+  <Project Path="Taso.Application/Taso.Application.csproj" />
+  <Project Path="Taso.Domain/Taso.Domain.csproj" />
+  <Project Path="Taso.Infrastructure/Taso.Infrastructure.csproj" />
+</Solution>

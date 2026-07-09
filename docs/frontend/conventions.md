@@ -59,3 +59,5 @@ Não utilizar Angular Material.
 Não utilizar PrimeNG.
 
 Não utilizar bibliotecas de UI.
+
+Um arquivo por declaração: não declarar ou implementar mais de uma classe, interface, type, etc. no mesmo arquivo (cada tipo/objeto deve possuir seu próprio ficheiro).
