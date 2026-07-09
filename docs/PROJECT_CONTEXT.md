@@ -16,6 +16,7 @@ Antes de implementar qualquer funcionalidade, leia os documentos abaixo na ordem
 
 - docs/frontend/architecture.md
 - docs/frontend/conventions.md
+- docs/frontend/design-system.md
 
 ## Regras
 
