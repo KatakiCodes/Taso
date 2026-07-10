@@ -27,7 +27,7 @@ public class TaskItemsController : ControllerBase
     /// <response code="400">Os dados informados são inválidos (falha na validação do Payload).</response>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), 201)]
-    [ProducesResponseType(400)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 400)]
     public async Task<IActionResult> Create(CreateTaskItemCommand command, CancellationToken cancellationToken)
     {
         var result = await _sender.SendAsync(command, cancellationToken);
@@ -47,7 +47,7 @@ public class TaskItemsController : ControllerBase
     /// <response code="400">Falha de negócio (ex: Tarefa já concluída, Tarefa não existe).</response>
     [HttpPut("{id:guid}/complete")]
     [ProducesResponseType(204)]
-    [ProducesResponseType(400)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 400)]
     public async Task<IActionResult> Complete(Guid id, CancellationToken cancellationToken)
     {
         var command = new CompleteTaskItemCommand(id);
