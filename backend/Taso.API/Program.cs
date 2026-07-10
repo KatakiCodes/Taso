@@ -1,39 +1,13 @@
-using Microsoft.EntityFrameworkCore;
-using Taso.Application.Common.CQRS;
-using Taso.Application.Common.Interfaces;
-using Taso.Domain.Repositories;
-using Taso.Infrastructure.Persistence;
-using Taso.Infrastructure.Repositories;
-using Taso.Infrastructure.Services;
-using Taso.Infrastructure.CQRS;
+using Taso.Application;
+using Taso.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<TasoDbContext>(options =>
-    options.UseInMemoryDatabase("TasoDb"));
-
-builder.Services.AddScoped<IDomainEventDispatcher, SimpleDomainEventDispatcher>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<ISender, Sender>();
-
-// Configure CQRS Handlers with Scrutor
-builder.Services.Scan(scan => scan
-    .FromAssemblyOf<ICommand>()
-    .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
-        .AsImplementedInterfaces()
-        .WithScopedLifetime()
-    .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))
-        .AsImplementedInterfaces()
-        .WithScopedLifetime()
-    .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)))
-        .AsImplementedInterfaces()
-        .WithScopedLifetime());
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
