@@ -18,7 +18,7 @@ Dependency Injection
 
 Validação
 
-FluentValidation
+Data Annotations (ModelState)
 
 Mapeamento
 
