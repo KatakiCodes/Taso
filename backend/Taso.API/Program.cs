@@ -5,6 +5,7 @@ using Taso.Domain.Repositories;
 using Taso.Infrastructure.Persistence;
 using Taso.Infrastructure.Repositories;
 using Taso.Infrastructure.Services;
+using Taso.Infrastructure.CQRS;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ISender, Sender>();
 
 // Configure CQRS Handlers with Scrutor
 builder.Services.Scan(scan => scan
