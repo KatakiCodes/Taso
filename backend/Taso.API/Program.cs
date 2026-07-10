@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Taso.Application.Common.CQRS;
 using Taso.Application.Common.Interfaces;
 using Taso.Domain.Repositories;
 using Taso.Infrastructure.Persistence;
@@ -8,7 +9,6 @@ using Taso.Infrastructure.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<TasoDbContext>(options =>
@@ -19,6 +19,19 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Configure CQRS Handlers with Scrutor
+builder.Services.Scan(scan => scan
+    .FromAssemblyOf<ICommand>()
+    .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
+        .AsImplementedInterfaces()
+        .WithScopedLifetime()
+    .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))
+        .AsImplementedInterfaces()
+        .WithScopedLifetime()
+    .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)))
+        .AsImplementedInterfaces()
+        .WithScopedLifetime());
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
