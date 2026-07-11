@@ -1,28 +1,28 @@
-using System.Diagnostics;
 using Taso.Application.Common.CQRS;
-using Taso.Domain.Events;
-using Taso.Domain.Entities;
-using Taso.Domain.Repositories;
 using Taso.Application.Common.Interfaces;
+using Taso.Domain.Entities;
+using Taso.Domain.Events;
+using Taso.Domain.Repositories;
+
 namespace Taso.Application.TaskItems.EventHandlers;
 
-public class TaskCreatedEventHandler : IDomainEventHandler<TaskCreatedEvent>
+public class TaskDeletedEventHandler : IDomainEventHandler<TaskDeletedEvent>
 {
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly ICurrentUserService _currentUserService;
 
-    public TaskCreatedEventHandler(IAuditLogRepository auditLogRepository, ICurrentUserService currentUserService)
+    public TaskDeletedEventHandler(IAuditLogRepository auditLogRepository, ICurrentUserService currentUserService)
     {
         _auditLogRepository = auditLogRepository;
         _currentUserService = currentUserService;
     }
 
-    public Task HandleAsync(TaskCreatedEvent domainEvent, CancellationToken cancellationToken = default)
+    public Task HandleAsync(TaskDeletedEvent domainEvent, CancellationToken cancellationToken = default)
     {
         var auditLog = new AuditLog(
             entityType: "TaskItem",
             entityId: domainEvent.TaskId,
-            action: "Created",
+            action: "Deleted",
             userId: _currentUserService.UserId ?? "System"
         );
 
