@@ -2,7 +2,8 @@ using Taso.Application.Common.CQRS;
 using Taso.Application.Common.Interfaces;
 using Taso.Domain.Common;
 
-namespace Taso.Application.Users.Commands;
+using Taso.Application.Users.Commands;
+namespace Taso.Application.Users.Handlers;
 
 public class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand, string>
 {

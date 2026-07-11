@@ -32,7 +32,8 @@ public static class DependencyInjection
 
         services.AddIdentity<ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole>()
             .AddEntityFrameworkStores<TasoDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddErrorDescriber<PortugueseIdentityErrorDescriber>();
 
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<JwtTokenGenerator>();
