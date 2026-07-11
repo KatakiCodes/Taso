@@ -17,6 +17,9 @@ public static class DependencyInjection
                 .WithScopedLifetime()
             .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)))
                 .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            .AddClasses(classes => classes.AssignableTo(typeof(IDomainEventHandler<>)))
+                .AsImplementedInterfaces()
                 .WithScopedLifetime());
 
         return services;

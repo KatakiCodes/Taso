@@ -48,6 +48,8 @@ public class TaskItem : BaseEntity
         Priority = priority;
         CategoryId = categoryId;
         UpdateTimestamp();
+        
+        AddDomainEvent(new TaskUpdatedEvent(Id));
     }
 
     public void AddSubTask(TaskItem subTask)
@@ -67,5 +69,17 @@ public class TaskItem : BaseEntity
         {
             AddDomainEvent(new TaskCompletedEvent(Id));
         }
+        else 
+        {
+            AddDomainEvent(new TaskUpdatedEvent(Id));
+        }
+    }
+    
+    public void MarkAsDeleted()
+    {
+        IsDeleted = true;
+        UpdateTimestamp();
+        
+        AddDomainEvent(new TaskDeletedEvent(Id));
     }
 }

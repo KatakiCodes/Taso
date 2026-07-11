@@ -29,7 +29,8 @@ public class DeleteCategoryCommandHandler : ICommandHandler<DeleteCategoryComman
         if (category.UserId != _currentUserService.UserId)
             return Result.Failure("Você não tem permissão para realizar ações neste recurso.");
 
-        _categoryRepository.Delete(category);
+        category.MarkAsDeleted();
+        
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return Result.Success();

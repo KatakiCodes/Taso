@@ -25,19 +25,21 @@ public class UnitOfWork : IUnitOfWork
 
         try
         {
-            var entitiesWithEvents = _context.ChangeTracker.Entries<BaseEntity>()
-                .Where(e => e.Entity.DomainEvents.Any())
-                .Select(e => e.Entity)
-                .ToList();
-
-            // Salva as entidades para gerar os IDs
-            var result = await _context.SaveChangesAsync(cancellationToken);
-
-            // Dispara os eventos de domínio
-            foreach (var entity in entitiesWithEvents)
+            // Event Loop: dispara os eventos de domínio ANTES de salvar
+            // Assim, qualquer modificação feita pelos handlers (ex: logs, atualizações em cascata)
+            // entrará na mesma transação de banco.
+            while (true)
             {
-                var events = entity.DomainEvents.ToList();
-                entity.ClearDomainEvents();
+                var domainEventEntity = _context.ChangeTracker.Entries<BaseEntity>()
+                    .Where(e => e.Entity.DomainEvents.Any())
+                    .Select(e => e.Entity)
+                    .FirstOrDefault();
+
+                if (domainEventEntity == null) 
+                    break;
+
+                var events = domainEventEntity.DomainEvents.ToList();
+                domainEventEntity.ClearDomainEvents();
 
                 foreach (var domainEvent in events)
                 {
@@ -45,7 +47,10 @@ public class UnitOfWork : IUnitOfWork
                 }
             }
 
-            // Se chegou até aqui sem exceções (seja no banco ou nos handlers dos eventos), comita a transação.
+            // Agora sim, salva tudo de uma vez
+            var result = await _context.SaveChangesAsync(cancellationToken);
+
+            // Se chegou até aqui sem exceções, comita a transação
             if (transaction != null)
                 await transaction.CommitAsync(cancellationToken);
 

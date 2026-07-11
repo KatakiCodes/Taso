@@ -13,6 +13,7 @@ public class TasoDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<TaskItem> TaskItems => Set<TaskItem>();
     public DbSet<Category> Categories => Set<Category>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

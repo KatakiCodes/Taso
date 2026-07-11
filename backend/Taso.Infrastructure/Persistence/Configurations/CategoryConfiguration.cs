@@ -20,5 +20,7 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 
         builder.Property(c => c.UserId)
             .IsRequired();
+
+        builder.HasQueryFilter(c => !c.IsDeleted);
     }
 }
