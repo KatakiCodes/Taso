@@ -5,4 +5,5 @@ namespace Taso.Domain.Repositories;
 public interface ITaskItemRepository : IRepository<TaskItem>
 {
     Task<TaskItem?> GetTaskWithSubTasksAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<TaskItem>> GetAllByUserIdAsync(string userId, CancellationToken cancellationToken = default);
 }

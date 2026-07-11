@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Taso.Application.Categories.Commands;
 using Taso.Application.Categories.DTOs;
@@ -6,6 +7,7 @@ using Taso.Application.Common.CQRS;
 
 namespace Taso.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CategoriesController : ControllerBase
@@ -23,8 +25,10 @@ public class CategoriesController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de categorias (CategoryDto).</returns>
     /// <response code="200">Categorias retornadas com sucesso.</response>
+    /// <response code="401">Usuário não autenticado (Token ausente ou inválido).</response>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<CategoryDto>), 200)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 401)]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
         var query = new GetAllCategoriesQuery();
@@ -40,10 +44,12 @@ public class CategoriesController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Os dados da Categoria (CategoryDto).</returns>
     /// <response code="200">Categoria encontrada e retornada.</response>
-    /// <response code="404">A categoria com o ID fornecido não foi encontrada.</response>
+    /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="404">A categoria não foi encontrada ou não pertence ao usuário logado (Acesso negado).</response>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(CategoryDto), 200)]
-    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 401)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 404)]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         var query = new GetCategoryByIdQuery(id);
@@ -63,9 +69,11 @@ public class CategoriesController : ControllerBase
     /// <returns>O identificador único (Guid) da Categoria recém criada.</returns>
     /// <response code="201">Categoria criada com sucesso.</response>
     /// <response code="400">Os dados informados são inválidos.</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), 201)]
     [ProducesResponseType(typeof(Taso.Domain.Common.Result), 400)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 401)]
     public async Task<IActionResult> Create(CreateCategoryCommand command, CancellationToken cancellationToken)
     {
         var result = await _sender.SendAsync(command, cancellationToken);
@@ -84,10 +92,12 @@ public class CategoriesController : ControllerBase
     /// <returns>Sem conteúdo em caso de sucesso.</returns>
     /// <response code="204">Categoria atualizada com sucesso.</response>
     /// <response code="400">A requisição é inválida (IDs não coincidem ou erro de validação).</response>
-    /// <response code="404">A categoria com o ID fornecido não foi encontrada.</response>
+    /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="404">A categoria não foi encontrada ou não pertence ao usuário logado (Acesso negado).</response>
     [HttpPut("{id:guid}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(typeof(Taso.Domain.Common.Result), 400)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 401)]
     [ProducesResponseType(typeof(Taso.Domain.Common.Result), 404)]
     public async Task<IActionResult> Update(Guid id, UpdateCategoryCommand command, CancellationToken cancellationToken)
     {
@@ -108,9 +118,11 @@ public class CategoriesController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Sem conteúdo em caso de sucesso.</returns>
     /// <response code="204">Categoria excluída com sucesso.</response>
-    /// <response code="404">A categoria não foi encontrada.</response>
+    /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="404">A categoria não foi encontrada ou não pertence ao usuário logado (Acesso negado).</response>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(204)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 401)]
     [ProducesResponseType(typeof(Taso.Domain.Common.Result), 404)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {

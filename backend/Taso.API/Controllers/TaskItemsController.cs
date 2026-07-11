@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Taso.Application.Common.CQRS;
 using Taso.Application.TaskItems.Commands;
@@ -6,6 +7,7 @@ using Taso.Application.TaskItems.DTOs;
 
 namespace Taso.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TaskItemsController : ControllerBase
@@ -25,9 +27,11 @@ public class TaskItemsController : ControllerBase
     /// <returns>O identificador único (Guid) da Tarefa recém criada.</returns>
     /// <response code="201">Tarefa criada com sucesso.</response>
     /// <response code="400">Os dados informados são inválidos (falha na validação do Payload).</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), 201)]
     [ProducesResponseType(typeof(Taso.Domain.Common.Result), 400)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 401)]
     public async Task<IActionResult> Create(CreateTaskItemCommand command, CancellationToken cancellationToken)
     {
         var result = await _sender.SendAsync(command, cancellationToken);
@@ -44,10 +48,12 @@ public class TaskItemsController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Sem conteúdo em caso de sucesso.</returns>
     /// <response code="204">Tarefa concluída com sucesso.</response>
-    /// <response code="400">Falha de negócio (ex: Tarefa já concluída, Tarefa não existe).</response>
+    /// <response code="400">Falha de negócio (ex: Tarefa já concluída, Tarefa não existe ou Acesso negado).</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpPut("{id:guid}/complete")]
     [ProducesResponseType(204)]
     [ProducesResponseType(typeof(Taso.Domain.Common.Result), 400)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 401)]
     public async Task<IActionResult> Complete(Guid id, CancellationToken cancellationToken)
     {
         var command = new CompleteTaskItemCommand(id);
@@ -65,10 +71,12 @@ public class TaskItemsController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Os dados da Tarefa (TaskItemDto).</returns>
     /// <response code="200">Tarefa encontrada e retornada.</response>
-    /// <response code="404">A tarefa com o ID fornecido não foi encontrada no banco.</response>
+    /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="404">A tarefa não foi encontrada ou não pertence ao usuário logado (Acesso negado).</response>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(TaskItemDto), 200)]
-    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 401)]
+    [ProducesResponseType(typeof(Taso.Domain.Common.Result), 404)]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         var query = new GetTaskItemByIdQuery(id);
