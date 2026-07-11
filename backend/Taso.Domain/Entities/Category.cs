@@ -1,5 +1,7 @@
 using Taso.Domain.Common;
 
+using Taso.Domain.Events;
+
 namespace Taso.Domain.Entities;
 
 public class Category : BaseEntity
@@ -15,6 +17,8 @@ public class Category : BaseEntity
         Name = name;
         Color = color;
         UserId = userId;
+        
+        AddDomainEvent(new CategoryCreatedEvent(Id));
     }
 
     public void Update(string name, string color)
@@ -22,5 +26,15 @@ public class Category : BaseEntity
         Name = name;
         Color = color;
         UpdateTimestamp();
+        
+        AddDomainEvent(new CategoryUpdatedEvent(Id));
+    }
+    
+    public void MarkAsDeleted()
+    {
+        IsDeleted = true;
+        UpdateTimestamp();
+        
+        AddDomainEvent(new CategoryDeletedEvent(Id));
     }
 }
