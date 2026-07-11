@@ -18,7 +18,7 @@ Toda operação deverá retornar Result<T>.
 
 Não lançar Exceptions para regras de negócio.
 
-Utilizar FluentValidation.
+Utilizar Data Annotations para validação na entrada dos Controllers.
 
 Utilizar async/await em toda operação de I/O.
 

@@ -17,4 +17,11 @@ public class TaskItemRepository : Repository<TaskItem>, ITaskItemRepository
             .Include(t => t.SubTasks)
             .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
+
+    public async Task<IReadOnlyList<TaskItem>> GetAllByUserIdAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .Where(t => t.UserId == userId)
+            .ToListAsync(cancellationToken);
+    }
 }

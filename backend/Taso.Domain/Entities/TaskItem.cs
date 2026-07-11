@@ -14,6 +14,8 @@ public class TaskItem : BaseEntity
     public TaskPriority Priority { get; private set; } = TaskPriority.Medium;
     public TaskState State { get; private set; } = TaskState.Todo;
 
+    public string UserId { get; private set; } = string.Empty;
+
     public Guid? CategoryId { get; private set; }
     public Category? Category { get; private set; }
 
@@ -24,7 +26,7 @@ public class TaskItem : BaseEntity
 
     private TaskItem() { } // For EF Core
 
-    public TaskItem(string title, string description, DateTime? dueDate, TaskPriority priority, Guid? categoryId, Guid? parentTaskId)
+    public TaskItem(string title, string description, DateTime? dueDate, TaskPriority priority, Guid? categoryId, Guid? parentTaskId, string userId)
     {
         Title = title;
         Description = description;
@@ -32,6 +34,7 @@ public class TaskItem : BaseEntity
         Priority = priority;
         CategoryId = categoryId;
         ParentTaskId = parentTaskId;
+        UserId = userId;
         State = TaskState.Todo;
 
         AddDomainEvent(new TaskCreatedEvent(Id));

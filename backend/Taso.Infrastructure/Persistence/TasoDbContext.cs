@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Taso.Domain.Entities;
+using Taso.Infrastructure.Identity;
 
 namespace Taso.Infrastructure.Persistence;
 
-public class TasoDbContext : DbContext
+public class TasoDbContext : IdentityDbContext<ApplicationUser>
 {
     public TasoDbContext(DbContextOptions<TasoDbContext> options) : base(options)
     {

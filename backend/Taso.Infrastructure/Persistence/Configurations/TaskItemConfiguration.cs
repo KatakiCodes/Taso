@@ -17,6 +17,9 @@ public class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
         builder.Property(t => t.Description)
             .HasMaxLength(1000);
 
+        builder.Property(t => t.UserId)
+            .IsRequired();
+
         // Foreign Key to Category
         builder.HasOne(t => t.Category)
             .WithMany()
